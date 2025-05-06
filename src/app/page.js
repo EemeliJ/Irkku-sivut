@@ -3,72 +3,87 @@ import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
-  // const totalLeaves = 5; testaamiseen
-  const totalLeaves = 50;
+  // Lintujen kuvat
+  const birdImages = ["/bird1.png", "/bird2.png", "/bird3.png"];
+
+  // Lintujen asemointi
+  const birdPositions = [
+    { left: "34%", top: "64%" },  // bird1
+    { left: "19%", top: "26.3%" },  // bird2
+    { left: "69.6%", top: "13.5%" },  // bird3
+  ];
+
+  // Pelilogiikka
   const [order, setOrder] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleLeaves, setVisibleLeaves] = useState([]);
+  const [visible, setVisible] = useState([]);  
+  const [current, setCurrent] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [displayLeaves, setDisplayLeaves] = useState([]);
 
   useEffect(() => {
-    const leaves = Array.from({ length: totalLeaves }, (_, i) => i);
-    const shuffledOrder = shuffleArray([...leaves]); // oikea järjestys
-    const shuffledDisplay = shuffleArray([...leaves]); // satunnainen visuaalinen järjestys
-
-    setOrder(shuffledOrder);
-    setVisibleLeaves(leaves); // kaikki lehdet näkyviin
-    setDisplayLeaves(shuffledDisplay);
+    const shuffled = shuffle([...birdImages]);
+    setOrder(shuffled);
+    setVisible([...birdImages]);
   }, []);
 
-  function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+  // Fisher–Yates shuffle
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+      [a[i], a[j]] = [a[j], a[i]];
     }
-    return array;
+    return a;
   }
 
-  function handleLeafClick(id) {
-    if (id === order[currentIndex]) {
-      const newVisible = visibleLeaves.filter((leafId) => leafId !== id);
-      setVisibleLeaves(newVisible);
-      if (currentIndex + 1 === totalLeaves) {
+  // Click handler
+  function handleClick(bird) {
+    if (bird === order[current]) {
+      // Oikein
+      const nextVisible = visible.filter((b) => b !== bird);
+      setVisible(nextVisible);
+      if (current + 1 === birdImages.length) {
         setCompleted(true);
       } else {
-        setCurrentIndex(currentIndex + 1);
+        setCurrent(current + 1);
       }
     } else {
-      // reset jos valitaan väärä lehti
-      setVisibleLeaves(Array.from({ length: totalLeaves }, (_, i) => i));
-      setCurrentIndex(0);
+      // Väärin --> Reset
+      setVisible([...birdImages]);
+      setCurrent(0);
     }
   }
 
   return (
     <div className={styles.wrapper}>
-      <img src="/ExampleTree.jpg" alt="Tree background" className={styles.background} />
-  
-      <div className={styles.page}>
-        <main className={styles.tree}>
-          {displayLeaves.map((leafId) =>
-            visibleLeaves.includes(leafId) ? (
-              <div
-                key={leafId}
-                className={styles.leaf}
-                onClick={() => handleLeafClick(leafId)}
-              >
-                🍃
-              </div>
-            ) : null
-          )}
-          {completed && (
-            <div className={styles.code}>
-              Onnittelut! koodisi: <strong>UNIQUE-CODE-1234</strong>
-            </div>
-          )}
-        </main>
-      </div>
+      <img
+        src="/ExampleTree.jpg"
+        alt="Tree background"
+        className={styles.background}
+      />
+
+      {visible.map((bird, i) => {
+        // Pidetään linnut paikoillaan
+        const idx = birdImages.indexOf(bird);
+        return (
+          <div
+            key={bird}
+            className={styles.clickable}
+            style={{
+              left: birdPositions[idx].left,
+              top:  birdPositions[idx].top,
+            }}
+            onClick={() => handleClick(bird)}
+          >
+            <img src={bird} alt={`Bird ${idx+1}`} className={styles.birdImage} />
+          </div>
+        );
+      })}
+
+      {completed && (
+        <div className={styles.code}>
+          Onnittelut! koodisi: <strong>Prööt</strong>
+        </div>
+      )}
     </div>
   );
 }
