@@ -46,25 +46,29 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.page}>
-      <main className={styles.tree}>
-        {displayLeaves.map((leafId) =>
-          visibleLeaves.includes(leafId) ? (
-            <div
-              key={leafId}
-              className={styles.leaf}
-              onClick={() => handleLeafClick(leafId)}
-            >
-              🍃
+    <div className={styles.wrapper}>
+      <img src="/ExampleTree.jpg" alt="Tree background" className={styles.background} />
+  
+      <div className={styles.page}>
+        <main className={styles.tree}>
+          {displayLeaves.map((leafId) =>
+            visibleLeaves.includes(leafId) ? (
+              <div
+                key={leafId}
+                className={styles.leaf}
+                onClick={() => handleLeafClick(leafId)}
+              >
+                🍃
+              </div>
+            ) : null
+          )}
+          {completed && (
+            <div className={styles.code}>
+              Onnittelut! koodisi: <strong>UNIQUE-CODE-1234</strong>
             </div>
-          ) : null
-        )}
-        {completed && (
-          <div className={styles.code}>
-            Congratulations! Your code: <strong>UNIQUE-CODE-1234</strong>
-          </div>
-        )}
-      </main>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

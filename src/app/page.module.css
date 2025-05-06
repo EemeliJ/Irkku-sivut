@@ -1,5 +1,34 @@
+html {
+  font-size: 0.5vw;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;  /* wrapper täyttää ruudun leveyden*/
+  height: 100vh; /* wrapper täyttää ruudun korkeuden*/
+  overflow: hidden;
+}
+
+.wrapper > img {
+  position: absolute; /* Pitää kuvan wrapperissa */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .page {
-  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -37,4 +66,10 @@
   margin-top: 2rem;
   font-size: 1.5rem;
   color: darkgreen;
+}
+
+.clickable {
+  position: absolute; /* Jotain esimerkkipaikoittelua */
+  left: 10rem;
+  top: 10rem;   
 }
